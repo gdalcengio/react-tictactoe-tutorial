@@ -24,7 +24,6 @@ class Board extends React.Component {
 
   createBoard() {
     let board = [];
-    // let
 
     for (let i = 0; i < 3; ++i) {
       let columns = [];
@@ -60,6 +59,7 @@ class Game extends React.Component {
       ],
       stepNumber: 0,
       xIsNext: true,
+      toggle: true,
     };
   }
 
@@ -84,6 +84,12 @@ class Game extends React.Component {
     });
   }
 
+  toggleOrder() {
+    this.setState({
+      toggle: !this.state.toggle,
+    });
+  }
+
   jumpTo(step) {
     this.setState({
       stepNumber: step,
@@ -97,9 +103,6 @@ class Game extends React.Component {
     const winner = calculateWinner(current.squares);
 
     const moves = history.map((step, move) => {
-      // console.log("move: " + move);
-      // console.log(this.state);
-      // console.log("stepnum: " + step);
       const desc = move
         ? "Go to move #" + move + " (" + step.col + "," + step.row + ")"
         : "Go to game start";
@@ -117,6 +120,15 @@ class Game extends React.Component {
           </button>
         </li>
       );
+    });
+
+    //reverse the order of keys
+    moves.sort((a, b) => {
+      if (this.state.toggle) {
+        return a.key - b.key;
+      } else {
+        return b.key - a.key;
+      }
     });
 
     let status;
@@ -137,6 +149,16 @@ class Game extends React.Component {
         </div>
         <div className="game-info">
           <div>{status}</div>
+          <div className="toggle">
+            <button
+              className="toggle-button"
+              onClick={() => this.toggleOrder()}
+            >
+              {this.state.toggle
+                ? "Click for Descending"
+                : "Click for Ascending"}
+            </button>
+          </div>
           <ol>{moves}</ol>
         </div>
       </div>
