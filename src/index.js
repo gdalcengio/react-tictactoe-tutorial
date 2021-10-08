@@ -59,7 +59,7 @@ class Board extends React.Component {
   }
 
   render() {
-    console.log(this.props.winningSquares);
+    // console.log(this.props.winningSquares);
     return <div>{this.createBoard()}</div>;
   }
 }
@@ -142,16 +142,24 @@ class Game extends React.Component {
     return null;
   }
 
+  squaresFilled() {
+    const current = this.state.history[this.state.history.length - 1];
+    let noNulls = true;
+
+    current.squares.forEach((square) => {
+      if (square === null) {
+        noNulls = false;
+      }
+    });
+
+    //if all squares have a not null value, false is returned
+    return noNulls;
+  }
+
   render() {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
     const winner = this.calculateWinner(current.squares);
-    // let winnerValue = "";
-    // if (winner) {
-    //   winnerValue = winner.value;
-    // } else {
-    //   winnerValue = "";
-    // }
 
     const moves = history.map((step, move) => {
       const desc = move
@@ -185,7 +193,10 @@ class Game extends React.Component {
     let status;
 
     if (winner) {
+      //check if winner
       status = "Winner: " + winner.value;
+    } else if (this.squaresFilled()) {
+      status = "Tie!";
     } else {
       status = "Next player: " + (this.state.xIsNext ? "X" : "O");
     }
